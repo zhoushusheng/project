@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.istudy.aixuetong.api.birth.entity.count.mapper.CountMapper">
+
+
+    <select id="listAreaCount" resultType="com.istudy.aixuetong.api.birth.entity.count.vo.AreaCountVO">
+
+        SELECT IFNULL(s.area_code, null) AS areaCode,
+               d.area_name               AS areaName,
+               count(s.id)               AS schoolCount
+        FROM acct_user_school us
+                 INNER JOIN t_school s ON us.school_id = s.id
+                 LEFT JOIN t_chinese_district d ON s.area_code = d.area_code
+        WHERE us.user_id = #{userId}
+          AND s.deleted = 0
+        GROUP BY d.area_code DESC
+    </select>
+
+    <select id="listEduCount" resultType="com.istudy.aixuetong.api.birth.entity.count.vo.EducationCountVO">
+
+        SELECT education        education,
+               count(education) educationCount
+        FROM t_teacher
+        GROUP BY education
+    </select>
+
+    <select id="listRplCount" resultType="com.istudy.aixuetong.api.birth.entity.count.vo.ReciprocalCountVO">
+
+
+        SELECT reciprocal        AS reciprocal,
+               count(reciprocal) AS countReciprocal
+        FROM t_school
+        GROUP BY reciprocal
+
+    </select>
+    <select id="listTitleCount" resultType="com.istudy.aixuetong.api.birth.entity.count.vo.TitleCountVO">
+
+
+        SELECT professional_title        professionalTitle,
+               count(professional_title) titleCount
+        FROM t_teacher
+        GROUP BY professional_title
+    </select>
+    <select id="listTypeCount" resultType="com.istudy.aixuetong.api.birth.entity.count.vo.TypeCountVO">
+
+
+        SELECT count(school_type) schoolCount,
+               school_type_name   schoolTypeName
+        FROM t_school_type tshlt
+                 INNER JOIN t_school tsl ON tshlt.school_type_id = tsl.school_type
+        GROUP BY school_type
+
+    </select>
+</mapper>
